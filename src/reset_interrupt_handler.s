@@ -40,8 +40,8 @@
 	
 	SET_ACCUM_8_BIT ; make register A 8-bits now
 	
-	jml DataBankRegisterReset ; update the data bank register by jumping here
-DataBankRegisterReset:
+	jml ProgramBankRegisterReset ; update the program bank register by jumping
+ProgramBankRegisterReset:
 
 	; initialize the system's hardware registers
 	lda #$80 ; disable drawing to screen and darken the screen
