@@ -7,7 +7,7 @@ SET tool_path=%project_path%tools/
 SET ca65="%tool_path%ca65.exe"
 SET ld65="%tool_path%ld65.exe"
 SET source_path=%project_path%src
-SET memory_map=memory_map.cfg
+SET memory_map=_memory_map.cfg
 SET memory_map_path=%source_path%\%memory_map%
 SET object_path=%project_path%build\obj
 SET binaries_path=%project_path%build\bin
@@ -86,7 +86,7 @@ ECHO.
 
 REM Link all the object files and load them together into a 'ROM' file
 ECHO Starting Linking...
-ECHO - Using '%memory_map%'
+ECHO - Using '%memory_map%' as the memory map
 
 REM Make a list of all object files to link
 FOR /f "delims=" %%f IN ('dir /b "%object_path%\*.o"') DO (

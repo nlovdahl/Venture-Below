@@ -16,9 +16,9 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.include "interrupt_handlers.inc"
-.include "system_macros.inc"
-.include "system_aliases.inc"
+.include "includes/interrupt_handlers.inc"
+.include "includes/system_macros.inc"
+.include "includes/system_aliases.inc"
 
 .segment "RESET_INTERRUPT_HANDLER"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

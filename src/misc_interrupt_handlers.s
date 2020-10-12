@@ -16,7 +16,7 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.include "interrupt_handlers.inc"
+.include "includes/interrupt_handlers.inc"
 
 .segment "MISC_INTERRUPT_HANDLERS"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
