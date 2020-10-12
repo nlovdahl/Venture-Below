@@ -90,7 +90,7 @@
 .addr DoNothingHandler ; COP (co-processor interrupt)
 .addr DoNothingHandler ; BRK (break interrupt)
 .addr DoNothingHandler ; ABT (abort interrupt)
-.addr DoNothingHandler ; NMI (V-Blank)
+.addr VBlankHandler    ; NMI (V-Blank)
 .addr ResetHandler     ; RST (reset / boot)
 .addr DoNothingHandler ; IRQ (interrupt request)
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

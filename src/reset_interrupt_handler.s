@@ -60,6 +60,8 @@ DataBankRegisterReset:
 	
 	cli ; enable interrupts again
 	
+InfiniteLoop:
 	wai ; stall the processor...
+	jmp InfiniteLoop
 .endproc
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

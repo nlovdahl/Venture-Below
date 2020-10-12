@@ -16,6 +16,15 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.global ResetHandler
-.global VBlankHandler
-.global DoNothingHandler
+.include "includes/interrupt_handlers.inc"
+.include "includes/system_macros.inc"
+.include "includes/system_aliases.inc"
+
+.segment "VBLANK_INTERRUPT_HANDLER"
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.proc VBlankHandler
+	lda RDNMI ; acknowledge NMI by reading the flag
+	
+	rti
+.endproc
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
