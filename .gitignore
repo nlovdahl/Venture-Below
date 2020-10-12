@@ -1,0 +1,5 @@
+# don't include programs used to build the ROM
+tools
+
+# ignore files created from the build
+build
