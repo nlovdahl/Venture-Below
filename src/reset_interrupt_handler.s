@@ -44,8 +44,84 @@
 ProgramBankRegisterReset:
 
 	; initialize the system's hardware registers
-	lda #$80 ; disable drawing to screen and darken the screen
+	lda #$80 ; disable drawing to screen
 	sta INIDISP
+	
+	; initialize basic PPU registers
+	stz OBJSEL
+	stz BGMODE
+	stz MOSAIC
+	stz BG1SC
+	stz BG2SC
+	stz BG3SC
+	stz BG4SC
+	stz BG12NBA
+	stz BG34NBA
+	; initialize background scroll registers
+	stz BG1H0FS ; write twice to set
+	stz BG1H0FS
+	stz BG1V0FS ; write twice to set
+	stz BG1V0FS
+	stz BG2H0FS ; write twice to set
+	stz BG2H0FS
+	stz BG2V0FS ; write twice to set
+	stz BG2V0FS
+	stz BG3H0FS ; write twice to set
+	stz BG3H0FS
+	stz BG3V0FS ; write twice to set
+	stz BG3V0FS
+	stz BG4H0FS ; write twice to set
+	stz BG4H0FS
+	stz BG4V0FS ; write twice to set
+	stz BG4V0FS
+	; initialize registers related to mode 7 transformations
+	stz M7SEL
+	lda #$01
+	sta M7A ; write twice to set
+	stz M7A
+	stz M7B ; write twice to set
+	stz M7B
+	stz M7C ; write twice to set
+	stz M7C
+	sta M7D ; write twice to set
+	stz M7D
+	stz M7X ; write twice to set
+	stz M7X
+	stz M7Y ; write twice to set
+	stz M7Y
+	; initialize window mask registers
+	stz W12SEL
+	stz W34SEL
+	stz WOBJSEL
+	stz WH0
+	stz WH1
+	stz WH2
+	stz WH3
+	stz WBGLOG
+	stz WOBJLOG
+	; initialize screen and window mask designation registers
+	stz TM
+	stz TS
+	stz TMW
+	stz TSW
+	; initialize color math registers
+	lda #$30
+	sta CGSWSEL
+	stz CGADSUB
+	lda #$E0
+	sta COLDATA
+	; initialize register for screen settings
+	stz SETINI
+	; initialize screen control / timing registers
+	stz NMITIMEN
+	; initialize IO port (controllers?)
+	lda #$FF
+	sta WRIO
+	; initialize values for H/V count timers
+	stz HTIMEL
+	stz HTIMEH
+	stz VTIMEL
+	stz VTIMEH
 	
 	lda #$70 ; low byte of color first
 	sta CGDATA
