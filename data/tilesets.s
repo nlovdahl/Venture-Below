@@ -16,11 +16,9 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.ifndef INTERRUPT_HANDLERS_INCLUDED_
-INTERRUPT_HANDLERS_INCLUDED_ = 1
+.include "../src/includes/tilesets.inc"
 
-.global ResetHandler
-.global VBlankHandler
-.global DoNothingHandler
-
-.endif ; INTERRUPT_HANDLERS_INCLUDED_
+.segment "TILESET_DATA"
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GlyphsTileset: .incbin "tilesets/glyphs.chr"
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

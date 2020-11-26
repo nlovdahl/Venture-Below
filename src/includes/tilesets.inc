@@ -16,11 +16,11 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.ifndef INTERRUPT_HANDLERS_INCLUDED_
-INTERRUPT_HANDLERS_INCLUDED_ = 1
+; this file contains the labels used for the tilesets
 
-.global ResetHandler
-.global VBlankHandler
-.global DoNothingHandler
+.ifndef TILESETS_INCLUDED_
+TILESETS_INCLUDED_ = 1
 
-.endif ; INTERRUPT_HANDLERS_INCLUDED_
+.global GlyphsTileset
+
+.endif ; TILESETS_INCLUDED_

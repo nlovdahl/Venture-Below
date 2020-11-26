@@ -1,4 +1,4 @@
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
 ; Copyright (C) 2020 Nicholas Lovdahl
 
@@ -14,12 +14,12 @@
 
 ; You should have received a copy of the GNU General Public License along with
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .include "includes/interrupt_handlers.inc"
 
 .segment "HEADER_DATA"
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; maker code
 .byte $4E ; N
 .byte $4C ; L
@@ -82,10 +82,10 @@
 .word $0000
 ; checksum
 .word $0000
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .segment "NATIVE_MODE_INTERRUPT_HANDLER_TABLE"
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; Native Mode Interrupts (16 bit mode)
 .addr DoNothingHandler ; COP (co-processor interrupt)
 .addr DoNothingHandler ; BRK (break interrupt)
@@ -93,10 +93,10 @@
 .addr VBlankHandler    ; NMI (V-Blank)
 .addr ResetHandler     ; RST (reset / boot)
 .addr DoNothingHandler ; IRQ (interrupt request)
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .segment "EMULATOR_MODE_INTERRUPT_HANDLER_TABLE"
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; Emulator Mode Interrupts (8 bit mode)
 .addr DoNothingHandler ; COP (should never happen)
 .addr DoNothingHandler ; BRK (should never happen)
@@ -104,4 +104,4 @@
 .addr DoNothingHandler ; NMI (V-Blank should only happen in Native Mode)
 .addr ResetHandler     ; RST (reset / boot)
 .addr DoNothingHandler ; IRQ (interrupt request)
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

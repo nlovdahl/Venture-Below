@@ -1,0 +1,4 @@
+# Data files are binary
+*.dat binary
+*.chr binary
+*.pal binary

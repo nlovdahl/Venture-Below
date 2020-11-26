@@ -58,22 +58,22 @@ ProgramBankRegisterReset:
 	stz BG12NBA
 	stz BG34NBA
 	; initialize background scroll registers
-	stz BG1H0FS ; write twice to set
-	stz BG1H0FS
-	stz BG1V0FS ; write twice to set
-	stz BG1V0FS
-	stz BG2H0FS ; write twice to set
-	stz BG2H0FS
-	stz BG2V0FS ; write twice to set
-	stz BG2V0FS
-	stz BG3H0FS ; write twice to set
-	stz BG3H0FS
-	stz BG3V0FS ; write twice to set
-	stz BG3V0FS
-	stz BG4H0FS ; write twice to set
-	stz BG4H0FS
-	stz BG4V0FS ; write twice to set
-	stz BG4V0FS
+	stz BG1HOFS ; write twice to set
+	stz BG1HOFS
+	stz BG1VOFS ; write twice to set
+	stz BG1VOFS
+	stz BG2HOFS ; write twice to set
+	stz BG2HOFS
+	stz BG2VOFS ; write twice to set
+	stz BG2VOFS
+	stz BG3HOFS ; write twice to set
+	stz BG3HOFS
+	stz BG3VOFS ; write twice to set
+	stz BG3VOFS
+	stz BG4HOFS ; write twice to set
+	stz BG4HOFS
+	stz BG4VOFS ; write twice to set
+	stz BG4VOFS
 	; initialize registers related to mode 7 transformations
 	stz M7SEL
 	lda #$01

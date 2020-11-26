@@ -1,4 +1,4 @@
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
 ; Copyright (C) 2020 Nicholas Lovdahl
 
@@ -14,10 +14,19 @@
 
 ; You should have received a copy of the GNU General Public License along with
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.ifndef SYSTEM_ALIASES_INCLUDED_
+SYSTEM_ALIASES_INCLUDED_ = 1
 
 ; System Aliases
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; System Banks
+RESET_BANK     = $00
+HARDWARE_BANK  = $20
+LOW_WRAM_BANK  = $7E
+HIGH_WRAM_BANK = $7F
+
 ; PPU Control Registers
 INIDISP  = $2100 ; Controls initial settings for the screen
 OBJSEL   = $2101 ; Controls object size and object data area designation
@@ -32,14 +41,14 @@ BG3SC    = $2109 ; Address for storing SC data for respective background and SC
 BG4SC    = $210A ; Address for storing SC data for respective background and SC
 BG12NBA  = $210B ; Background character data area designation (BG1 & BG2)
 BG34NBA  = $210C ; Background character data area designation (BG3 & BG4)
-BG1H0FS  = $210D ; Horizontal Scroll value designation for BG1
-BG1V0FS  = $210E ; Vertical Scroll value designation for BG1
-BG2H0FS  = $210F ; Horizontal Scroll value designation for BG2
-BG2V0FS  = $2110 ; Vertical Scroll value designation for BG2
-BG3H0FS  = $2111 ; Horizontal Scroll value designation for BG3
-BG3V0FS  = $2112 ; Vertical Scroll value designation for BG3
-BG4H0FS  = $2113 ; Horizontal Scroll value designation for BG4
-BG4V0FS  = $2114 ; Vertical Scroll value designation for BG4
+BG1HOFS  = $210D ; Horizontal Scroll value designation for BG1
+BG1VOFS  = $210E ; Vertical Scroll value designation for BG1
+BG2HOFS  = $210F ; Horizontal Scroll value designation for BG2
+BG2VOFS  = $2110 ; Vertical Scroll value designation for BG2
+BG3HOFS  = $2111 ; Horizontal Scroll value designation for BG3
+BG3VOFS  = $2112 ; Vertical Scroll value designation for BG3
+BG4HOFS  = $2113 ; Horizontal Scroll value designation for BG4
+BG4VOFS  = $2114 ; Vertical Scroll value designation for BG4
 VMAINC   = $2115 ; VRAM Address Increment Value designation
 VMADDL   = $2116 ; Address for VRAM read and write
 VMADDH   = $2117 ; Address for VRAM read and write
@@ -211,4 +220,6 @@ DMA7DB   = $4377 ; Data address stored by H-DMA and number of bytes to transfer
 DMA7A2L  = $4378 ; A2 Table address
 DMA7A2H  = $4379 ; A2 Table address
 DMA7NL   = $437A ; Number of lines transfered by H-DMA
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.endif ; SYSTEM_ALIASES_INCLUDED_
