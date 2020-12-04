@@ -18,7 +18,10 @@
 
 .include "includes/interrupt_handlers.inc"
 
-.segment "MISC_INTERRUPT_HANDLERS"
+.a8
+.i16
+
+.segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .proc DoNothingHandler
 	rti

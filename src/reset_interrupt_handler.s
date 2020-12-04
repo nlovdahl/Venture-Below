@@ -20,7 +20,7 @@
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
-.segment "RESET_INTERRUPT_HANDLER"
+.segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .proc ResetHandler
 	sei ; disable interrupts

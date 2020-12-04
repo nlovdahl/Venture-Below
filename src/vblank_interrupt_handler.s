@@ -20,7 +20,10 @@
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
-.segment "VBLANK_INTERRUPT_HANDLER"
+.a8
+.i16
+
+.segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .proc VBlankHandler
 	lda RDNMI ; acknowledge NMI by reading the flag
