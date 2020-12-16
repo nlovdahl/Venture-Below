@@ -87,21 +87,21 @@
 .segment "NATIVE_MODE_INTERRUPT_HANDLER_TABLE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; Native Mode Interrupts (16 bit mode)
-.addr DoNothingHandler ; COP (co-processor interrupt)
-.addr DoNothingHandler ; BRK (break interrupt)
-.addr DoNothingHandler ; ABT (abort interrupt)
-.addr VBlankHandler    ; NMI (V-Blank)
-.addr ResetHandler     ; RST (reset / boot)
-.addr DoNothingHandler ; IRQ (interrupt request)
+.addr doNothingHandler ; COP (co-processor interrupt)
+.addr doNothingHandler ; BRK (break interrupt)
+.addr doNothingHandler ; ABT (abort interrupt)
+.addr vBlankHandler    ; NMI (V-Blank)
+.addr resetHandler     ; RST (reset / boot)
+.addr doNothingHandler ; IRQ (interrupt request)
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .segment "EMULATOR_MODE_INTERRUPT_HANDLER_TABLE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; Emulator Mode Interrupts (8 bit mode)
-.addr DoNothingHandler ; COP (should never happen)
-.addr DoNothingHandler ; BRK (should never happen)
-.addr DoNothingHandler ; ABT (should never happen)
-.addr DoNothingHandler ; NMI (V-Blank should only happen in Native Mode)
-.addr ResetHandler     ; RST (reset / boot)
-.addr DoNothingHandler ; IRQ (interrupt request)
+.addr doNothingHandler ; COP (should never happen)
+.addr doNothingHandler ; BRK (should never happen)
+.addr doNothingHandler ; ABT (should never happen)
+.addr doNothingHandler ; NMI (V-Blank should only happen in Native Mode)
+.addr resetHandler     ; RST (reset / boot)
+.addr doNothingHandler ; IRQ (interrupt request)
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

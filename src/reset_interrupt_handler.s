@@ -17,12 +17,14 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .include "includes/interrupt_handlers.inc"
+
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
 .segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.proc ResetHandler
+; this fire during reset, when hardware is powered on or on a reset signal
+.proc resetHandler
 	sei ; disable interrupts
 	clc ; enter native mode (switch from 8-bit mode to 16-bit mode)
 	xce
@@ -40,8 +42,8 @@
 	
 	SET_ACCUM_8_BIT ; make register A 8-bits now
 	
-	jml ProgramBankRegisterReset ; update the program bank register by jumping
-ProgramBankRegisterReset:
+	jml Program_Bank_Register_Reset ; update the program bank register via jump
+Program_Bank_Register_Reset:
 
 	; initialize the system's hardware registers
 	lda #$80 ; disable drawing to screen
@@ -136,8 +138,8 @@ ProgramBankRegisterReset:
 	
 	cli ; enable interrupts again
 	
-InfiniteLoop:
+Infinite_Loop:
 	wai ; stall the processor...
-	jmp InfiniteLoop
+	jmp Infinite_Loop
 .endproc
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

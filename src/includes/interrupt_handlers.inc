@@ -19,8 +19,8 @@
 .ifndef INTERRUPT_HANDLERS_INCLUDED_
 INTERRUPT_HANDLERS_INCLUDED_ = 1
 
-.global ResetHandler
-.global VBlankHandler
-.global DoNothingHandler
+.global resetHandler
+.global vBlankHandler
+.global doNothingHandler
 
 .endif ; INTERRUPT_HANDLERS_INCLUDED_

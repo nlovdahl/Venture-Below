@@ -21,6 +21,6 @@
 .ifndef PALETTES_INCLUDED_
 PALETTES_INCLUDED_ = 1
 
-.global GlyphsPalette
+.global Glyphs_Palette
 
 .endif ; PALETTES_INCLUDED_

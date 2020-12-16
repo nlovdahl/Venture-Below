@@ -21,6 +21,6 @@
 .ifndef TILESETS_INCLUDED_
 TILESETS_INCLUDED_ = 1
 
-.global GlyphsTileset
+.global Glyphs_Tileset
 
 .endif ; TILESETS_INCLUDED_

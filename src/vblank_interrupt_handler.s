@@ -17,6 +17,7 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .include "includes/interrupt_handlers.inc"
+
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
@@ -25,7 +26,7 @@
 
 .segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.proc VBlankHandler
+.proc vBlankHandler
 	lda RDNMI ; acknowledge NMI by reading the flag
 	
 	rti
