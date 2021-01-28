@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2020 Nicholas Lovdahl
+; Copyright (C) 2021 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -21,48 +21,102 @@ SYSTEM_MACROS_INCLUDED_ = 1
 
 .include "system_aliases.inc"
 
+.define PRESERVE_REGS_TRUE 1  ; registers should be preserved
+.define PRESERVE_REGS_FALSE 0 ; registers need not be preserved
+
 ; CPU Control Macros
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; Set the CPU to binary mode (as opposed to decimal mode)
+; Set the CPU to binary mode (as opposed to decimal mode).
+; This macro takes no parameters.
 .macro SET_BIN_MODE
 	rep #$08
 .endmacro
 
-; Set the CPU to decimal mode (as opposed to binary mode)
+; Set the CPU to decimal mode (as opposed to binary mode).
+; This macro takes no parameters.
 .macro SET_DEC_MODE
 	sep #$08
 .endmacro
 
-; Set the accumulator register (A) to be 16-bits
+; Set the accumulator register (A) to be 16-bits.
+; This macro takes no parameters.
 .macro SET_ACCUM_16_BIT
 	rep #$20
 .endmacro
 
-; Set the accumulator register (A) to be 8-bits
+; Set the accumulator register (A) to be 8-bits.
+; This macro takes no parameters.
 .macro SET_ACCUM_8_BIT
 	sep #$20
 .endmacro
 
-; Set the index registers (X & Y) to be 16-bits
+; Set the index registers (X & Y) to be 16-bits.
+; This macro takes no parameters.
 .macro SET_INDEX_16_BIT
 	rep #$10
 .endmacro
 
-; Set the index registers (X & Y) to be 8-bits
+; Set the index registers (X & Y) to be 8-bits.
+; This macro takes no parameters.
 .macro SET_INDEX_8_BIT
 	sep #$10
+.endmacro
+
+; Sets the data bank register.
+; This macro takes two parameters.
+; 'preserve' determines whether or not CPU registers should be preserved when
+; this macro is called. If 'preserve' is zero (PRESERVE_REGS_FALSE), then CPU
+; registers may be clobbered by this macro.
+; 'data_bank' is the value to be used to set the data bank register.
+.macro SET_DATA_BANK preserve, data_bank
+	.if .paramcount <> 2
+	.error "Incorrect number of parameters for SET_DATA_BANK macro"
+	.endif
+	
+	; save the A register if we should preserve registers
+	.if preserve <> PRESERVE_REGS_FALSE
+	pha
+	.endif
+	
+	lda data_bank ; load and set the data bank register through the stack
+	pha
+	plb
+	
+	; restore the A register if we should preserve registers
+	.if preserve <> PRESERVE_REGS_FALSE
+	pla
+	.endif
+.endmacro
+
+; Sets the direct page register to an immediate address.
+; This macro takes a single parameter.
+; 'direct_page' is the value to which the direct page should be set. It should
+; be in the form of $XXXX - not #$XXXX or ($XXXX).
+.macro SET_DIRECT_PAGE_IMMEDIATE direct_page
+	.if paramcount <> 1
+	.error "Incorrect number of parameters for SET_DIRECT_PAGE_IMMEDIATE macro"
+	.endif
+	
+	pea direct_page ; set the direct page using the stack
+	pld
 .endmacro
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ; DMA Macros
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-PRESERVE_REGS_TRUE = 1  ; registers should be preserved
-PRESERVE_REGS_FALSE = 0 ; registers need not be preserved
-
-; Transfers data to low WRAM using DMA
-.macro LOW_WRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
+; Transfers data to low WRAM using DMA.
+; This macro takes five parameters.
+; 'preserve' determines whether or not CPU registers should be preserved when
+; this macro is called. If 'preserve' is zero (PRESERVE_REGS_FALSE), then CPU
+; registers may be clobbered by this macro.
+; 'src_bank' is the source's data bank (upper 8 bits).
+; 'src_addr' is the source's address (lower 16 bits).
+; 'dest_addr' is the destination address in low WRAM.
+; 'num_bytes' is the number of bytes to transfer. Note that using 0 will
+; actually transfer 65536 bytes.
+.macro LWRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
 	.if .paramcount <> 4
-	.error "Incorrect number of parameters for LOW_WRAM_TRANSFER macro"
+	.error "Incorrect number of parameters for LWRAM_TRANSFER macro"
 	.endif
 	
 	; save registers values if we should preserve registers
@@ -100,10 +154,19 @@ PRESERVE_REGS_FALSE = 0 ; registers need not be preserved
 	.endif
 .endmacro
 
-; Transfers data to high WRAM using DMA
-.macro HIGH_WRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
+; Transfers data to high WRAM using DMA.
+; This macro takes five parameters.
+; 'preserve' determines whether or not CPU registers should be preserved when
+; this macro is called. If 'preserve' is zero (PRESERVE_REGS_FALSE), then CPU
+; registers may be clobbered by this macro.
+; 'src_bank' is the source's data bank (upper 8 bits).
+; 'src_addr' is the source's address (lower 16 bits).
+; 'dest_addr' is the destination address in low WRAM.
+; 'num_bytes' is the number of bytes to transfer. Note that using 0 will
+; actually transfer 65536 bytes.
+.macro HWRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
 	.if .paramcount <> 4
-	.error "Incorrect number of parameters for HIGH_WRAM_TRANSFER macro"
+	.error "Incorrect number of parameters for HWRAM_TRANSFER macro"
 	.endif
 	
 	; save registers values if we should preserve registers
@@ -141,7 +204,16 @@ PRESERVE_REGS_FALSE = 0 ; registers need not be preserved
 	.endif
 .endmacro
 
-; Transfers data to VRAM using DMA
+; Transfers data to VRAM using DMA.
+; This macro takes five parameters.
+; 'preserve' determines whether or not CPU registers should be preserved when
+; this macro is called. If 'preserve' is zero (PRESERVE_REGS_FALSE), then CPU
+; registers may be clobbered by this macro.
+; 'src_bank' is the source's data bank (upper 8 bits).
+; 'src_addr' is the source's address (lower 16 bits).
+; 'dest_addr' is the destination address in low WRAM.
+; 'num_bytes' is the number of bytes to transfer. Note that using 0 will
+; actually transfer 65536 bytes.
 .macro VRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
 .if .paramcount <> 4
 	.error "Incorrect number of parameters for VRAM_TRANSFER macro"
@@ -183,7 +255,16 @@ PRESERVE_REGS_FALSE = 0 ; registers need not be preserved
 	.endif
 .endmacro
 
-; Transfers data to CGRAM using DMA
+; Transfers data to CGRAM using DMA.
+; This macro takes five parameters.
+; 'preserve' determines whether or not CPU registers should be preserved when
+; this macro is called. If 'preserve' is zero (PRESERVE_REGS_FALSE), then CPU
+; registers may be clobbered by this macro.
+; 'src_bank' is the source's data bank (upper 8 bits).
+; 'src_addr' is the source's address (lower 16 bits).
+; 'dest_addr' is the destination address in low WRAM.
+; 'num_bytes' is the number of bytes to transfer. Note that using 0 will
+; actually transfer 65536 bytes.
 .macro CGRAM_TRANSFER preserve, src_bank, src_addr, dest_addr, num_bytes
 .if .paramcount <> 4
 	.error "Incorrect number of parameters for VRAM_TRANSFER macro"

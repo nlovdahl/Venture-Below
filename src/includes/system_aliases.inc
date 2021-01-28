@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2020 Nicholas Lovdahl
+; Copyright (C) 2021 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -22,10 +22,10 @@ SYSTEM_ALIASES_INCLUDED_ = 1
 ; System Aliases
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; System Banks
-RESET_BANK     = $00
-HARDWARE_BANK  = $20
-LOW_WRAM_BANK  = $7E
-HIGH_WRAM_BANK = $7F
+RESET_BANK    = $00
+HARDWARE_BANK = $20
+LWRAM_BANK    = $7E
+HWRAM_BANK    = $7F
 
 ; PPU Control Registers
 INIDISP  = $2100 ; Controls initial settings for the screen

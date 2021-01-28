@@ -16,15 +16,16 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.include "includes/interrupt_handlers.inc"
+.include "includes/main_loop.inc"
 
 .a8
 .i16
 
-.segment "INTERRUPT_HANDLER_CODE"
+.code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for this procedure.
-.proc doNothingHandler
-	rti
+.proc mainLoop
+Main_Loop:
+	wai ; stall the processor
+	jmp Main_Loop
 .endproc
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

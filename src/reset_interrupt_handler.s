@@ -1,6 +1,6 @@
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2020 Nicholas Lovdahl
+; Copyright (C) 2021 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -14,18 +14,22 @@
 
 ; You should have received a copy of the GNU General Public License along with
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .include "includes/interrupt_handlers.inc"
 
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
+.include "includes/actions.inc"
+.include "includes/main_loop.inc"
+
 .segment "INTERRUPT_HANDLER_CODE"
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; this fire during reset, when hardware is powered on or on a reset signal
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; See the appropriate include file for this procedure.
 .proc resetHandler
 	sei ; disable interrupts
+	
 	clc ; enter native mode (switch from 8-bit mode to 16-bit mode)
 	xce
 	
@@ -116,7 +120,7 @@ Program_Bank_Register_Reset:
 	stz SETINI
 	; initialize screen control / timing registers
 	stz NMITIMEN
-	; initialize IO port (controllers?)
+	; initialize IO port
 	lda #$FF
 	sta WRIO
 	; initialize values for H/V count timers
@@ -125,21 +129,42 @@ Program_Bank_Register_Reset:
 	stz VTIMEL
 	stz VTIMEH
 	
-	lda #$70 ; low byte of color first
-	sta CGDATA
-	lda #$03 ; then the high byte
-	sta CGDATA
+	; set the data bank register to the low WRAM bank
+	SET_DATA_BANK PRESERVE_REGS_FALSE, #LWRAM_BANK
 	
-	; prepare to turn over controll of the system (restart some things)
+	; jump to a process in the code bank nexta
+	jml systemInit ; initialize software systems / subsystems
+.endproc
+
+; once initialization is done, it should jump back here to perform cleanup
+.proc resetHandlerCleanup
+	; set the data bank register to the the hardware bank
+	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
+	
+	; prepare to turn over control of the system (restart some things)
 	lda #$0F ; turn on the screen with full brightness
 	sta INIDISP
 	lda #$81 ; allow V-Blanks again and start automatically polling controllers
 	sta NMITIMEN
 	
+	; set the data bank register to the low WRAM bank
+	SET_DATA_BANK PRESERVE_REGS_FALSE, #LWRAM_BANK
+	
 	cli ; enable interrupts again
 	
-Infinite_Loop:
-	wai ; stall the processor...
-	jmp Infinite_Loop
+	; go to the main loop for the program now that everything is ready
+	jml mainLoop
 .endproc
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.code
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; A procedure that performs initialization for the software systems and 
+; subsystems used by this program.
+; This procedure takes no parameters and returns nothing.
+.proc systemInit
+	jsr resetActionSystem ; this effectively initializes the action system
+	
+	jml resetHandlerCleanup
+.endproc
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2020 Nicholas Lovdahl
+; Copyright (C) 2021 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -25,7 +25,7 @@
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; sets the seed used for rng - if the seed is zero it will be altered
+; See the appropriate include file for information about this procedure.
 .proc setSeed
 	cpx #0 ; check if the seed in x is zero
 	bne Set_Good_Seed ; if the seed isn't 0, we can just set it
@@ -39,7 +39,7 @@ Set_Good_Seed:
 	rts
 .endproc
 
-; generates a random byte and places it at the first byte of rand_value
+; See the appropriate include file for information about this procedure.
 .proc nextRandomByte
 	lda odd_byte_ ; check if there is a leftover byte to use
 	bmi Leftover_Byte ; if the high bit is set (negative number) we have a byte
@@ -61,7 +61,7 @@ Leftover_Byte:
 	rts
 .endproc
 
-; generates a random word and places it in rand_value
+; See the appropriate include file for information about this procedure.
 .proc nextRandomWord
 	stz odd_byte_ ; we need a whole word, no leftover bytes
 	

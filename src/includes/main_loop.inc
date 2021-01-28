@@ -16,15 +16,10 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.include "includes/interrupt_handlers.inc"
+.ifndef MAIN_LOOP_INCLUDED_
+MAIN_LOOP_INCLUDED_ = 1
 
-.a8
-.i16
+; The main loop for the program.
+.global mainLoop
 
-.segment "INTERRUPT_HANDLER_CODE"
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for this procedure.
-.proc doNothingHandler
-	rti
-.endproc
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.endif
