@@ -37,6 +37,9 @@ CONTINUOUS_ACTIONS_SIZE = MAX_CONTINUOUS_ACTIONS * 8 ; 8 bytes / action
 ; the address of the buffer for continuous action data
 CONTINUOUS_BUFFER_ADDR = .LOWORD(continuous_actions_buffer_)
 
+; the address of the register that holds procedure pointers used for calls
+PROC_ADDRESS_ADDR = .LOWORD(proc_address_)
+
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; See the appropriate include file for information about this procedure.
@@ -47,8 +50,8 @@ CONTINUOUS_BUFFER_ADDR = .LOWORD(continuous_actions_buffer_)
 	
 	; start & end point to the start of the buffer
 	lda #PERIODIC_BUFFER_ADDR
-	sta periodic_action_start_
-	sta periodic_action_end_
+	sta periodic_actions_start_
+	sta periodic_actions_end_
 	
 	stz first_periodic_action_marker_ ; null since there are no markers yet
 	stz last_periodic_action_marker_  ; null since there are no markers yet
@@ -106,7 +109,7 @@ Add_Periodic_Action:
 	; increment the number of periodic actions since we are adding one
 	inc num_periodic_actions_ ; use inc since it is 'atomic'
 	
-	ldy periodic_action_end_
+	ldy periodic_actions_end_
 	stx 0, y ; store the procedure pointer
 	plx
 	stx 2, y ; store the associated value
@@ -116,10 +119,10 @@ Add_Periodic_Action:
 	iny
 	iny
 	cpy #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
-	bcc Store_Period_Action_End
+	bcc Store_Periodic_Action_End
 	ldy #PERIODIC_BUFFER_ADDR
-Store_Period_Action_End:
-	sty periodic_action_end_
+Store_Periodic_Action_End:
+	sty periodic_actions_end_
 	
 	rts
 	
@@ -141,7 +144,7 @@ Add_Marker:
 	; increment the number of periodic actions since we are adding a marker
 	inc num_periodic_actions_ ; use inc since it is 'atomic'
 	
-	ldx periodic_action_end_ ; fill in the values for a new marker
+	ldx periodic_actions_end_ ; fill in the values for a new marker
 	stz 0, x
 	stz 2, x
 	
@@ -164,13 +167,95 @@ Increment_Buffer_End:
 	bcc Store_Period_Action_End ; if there's no rollover...
 	ldx #PERIODIC_BUFFER_ADDR
 Store_Period_Action_End:
-	stx periodic_action_end_
+	stx periodic_actions_end_
 	
 	rts
 .endproc
 
 ; See the appropriate include file for information about this procedure.
 .proc processPeriodicActions
+	ldx first_periodic_action_marker_
+	beq Finish_Processing_Periodic_Actions ; just return if that was zero
+	
+	SET_ACCUM_16_BIT ; we will be making use of A (mostly adding)
+	clc ; make sure carry is clear before proceeding
+	
+	; cleanup before we start processing
+	ldy periodic_actions_start_ ; keep the buffer's start pointer in Y for now
+	bra Check_Next_For_Cleaning
+	
+Advance_Start_For_Cleaning:
+	tya ; advance the buffer's end pointer, rolling it over if need be
+	adc #4
+	tay
+	cpy #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
+	bcc Check_Next_For_Cleaning ; if there's no rollover...
+	clc
+	ldy #PERIODIC_BUFFER_ADDR
+	
+Check_Next_For_Cleaning:
+	ldx a:0, y
+	beq Handle_Action_Set_Marker_Cleaning ; if zero, it's an action set marker
+	ldx a:2, y
+	bne Finish_Cleanup ; if non-zero, we are done cleaning
+	bra Advance_Start_For_Cleaning
+	
+Handle_Action_Set_Marker_Cleaning:
+	; the next action marker will now be first, it should be the assoc. value
+	ldx a:2, y
+	stx first_periodic_action_marker_
+	; if the associated value was zero, this was the last marker (end will be 0)
+	bne Advance_Start_For_Cleaning ; but if was non-zero, just advance
+	stx last_periodic_action_marker_
+	bra Finish_Processing_Periodic_Actions
+	
+Finish_Cleanup:
+	sty periodic_actions_start_ ; update the pointer to its now value
+	
+	; cleanup is done, check if we still have an action marker
+	ldx first_periodic_action_marker_
+	beq Finish_Processing_Periodic_Actions ; just return if that was zero
+	; else, start processing until we hit the first action set marker
+	
+Check_Next_For_Processing:
+	cpy first_periodic_action_marker_
+	beq Finish_Processing_Periodic_Actions ; finish if we hit the marker
+	clc
+	
+	ldx a:0, y ; get and store the procedure pointer (we may or may not use it)
+	stx proc_address_
+	
+	ldx a:2, y ; get and check the associated value now
+	beq Advance_Start_For_Processing ; skip processing if value is zero
+	; else, we will call the procedure with the appropriate value
+	
+	phy ; save our index into the buffer from being clobbered
+	pea Return_From_Called_Procedure - 1 ; -1 since PC will be incremented
+	SET_ACCUM_8_BIT ; set A to 8-bits for the procedure being called
+	jmp (PROC_ADDRESS_ADDR) ; jump to the procedure being pointed to
+	
+Return_From_Called_Procedure:
+	ply ; restore Y for indexing
+	
+	SET_ACCUM_16_BIT ; return A to 16-bits and clear carry too
+	clc
+	
+	txa ; store the new associated value
+	sta a:2, y
+	
+Advance_Start_For_Processing:
+	tya ; advance the buffer's end pointer, rolling it over if need be
+	adc #4
+	tay
+	cpy #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
+	bcc Check_Next_For_Processing ; if there's no rollover...
+	clc
+	ldy #PERIODIC_BUFFER_ADDR
+	bra Check_Next_For_Processing
+	
+Finish_Processing_Periodic_Actions:
+	SET_ACCUM_8_BIT ; return A to 8-bits before returning
+
 	rts
 .endproc
 
@@ -194,8 +279,8 @@ Store_Period_Action_End:
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; registers used for periodic actions
 num_periodic_actions_:         .res 1 ; number of actions & markers in buffer
-periodic_action_start_:        .res 2 ; point to start of the circular buffer
-periodic_action_end_:          .res 2 ; point to end of the circular buffer
+periodic_actions_start_:       .res 2 ; point to start of the circular buffer
+periodic_actions_end_:         .res 2 ; point to end of the circular buffer
 first_periodic_action_marker_: .res 2 ; point to the first marker in the buffer
 last_periodic_action_marker_:  .res 2 ; point to the last marker in the buffer
 
@@ -204,7 +289,7 @@ filled_continuous_actions_ptr_: .res 2 ; point to doubly-linked list of actions
 empty_continuous_actions_ptr_:  .res 2 ; point to doubly-linked list of empties
 
 ; other registers
-proc_address_: .res 2 ; holds the address to call
+proc_address_: .res 2 ; holds the address of the procedure to call
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .segment "ACTION_SYSTEM_DATA"
