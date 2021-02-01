@@ -129,6 +129,13 @@ Program_Bank_Register_Reset:
 	stz VTIMEL
 	stz VTIMEH
 	
+	lda #0 ; set the first color in CGRAM
+	sta CGADD
+	lda #$0F ; low byte
+	sta CGDATA
+	lda #$F0 ; high byte
+	sta CGDATA
+	
 	; set the data bank register to the low WRAM bank
 	SET_DATA_BANK PRESERVE_REGS_FALSE, #LWRAM_BANK
 	

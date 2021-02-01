@@ -21,6 +21,7 @@
 .include "includes/system_macros.inc"
 .include "includes/system_aliases.inc"
 
+.include "includes/ppu_control.inc"
 .include "includes/actions.inc"
 
 .a8
@@ -85,7 +86,13 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .proc vBlankProcess
 	; check for changes to be made thru the PPU
-	; TODO...
+	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
+	
+	; update the screen brightness register
+	lda screen_brightness
+	sta INIDISP
+	
+	SET_DATA_BANK PRESERVE_REGS_FALSE, #LWRAM_BANK
 	
 	; assume v-blank is up - do not make changes to the screen past this point!
 	; handle continuous actions, and then periodic actions

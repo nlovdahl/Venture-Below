@@ -16,26 +16,18 @@
 ; Venture Below. If not, see <https://www.gnu.org/licenses/>.
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.include "includes/main_loop.inc"
+.ifndef PPU_CONTROL_INCLUDED_
+PPU_CONTROL_INCLUDED_ = 1
 
-.include "includes/ppu_control.inc"
-.include "includes/actions.inc"
+; Adds a periodic action that fades in - gradually increasing the brightness of
+; the screen.
+.global addFadeInAction
 
-.a8
-.i16
+; Adds a periodic action that fades out - gradually decreasing the brightness of
+; the screen
+.global addFadeOutAction
 
-.code
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.proc mainLoop
-Main_Loop:
-	; fade in...
-	jsr addFadeInAction
-	jsr markPeriodicActionSet
-	; then fade out...
-	jsr addFadeOutAction
-	jsr markPeriodicActionSet
-	
-	wai ; stall the processor
-	jmp Main_Loop
-.endproc
-; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; The register that holds the value for the screen's brightness.
+.global screen_brightness
+
+.endif ; PPU_CONTROL_INCLUDED_
