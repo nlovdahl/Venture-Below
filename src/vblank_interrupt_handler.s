@@ -52,10 +52,9 @@
 	lda vblank_interrupt_active_flag_
 	bne vBlankHandlerCleanup
 	
-	lda #$FF ; set the flag now that the vblank interrupt is running
-	sta vblank_interrupt_active_flag_
+	inc vblank_interrupt_active_flag_ ; set the flag for NMI work
 	
-	jml vBlankProcess ; jump to a process proc in the code bank
+	jml vBlankProcessing ; jump to a process proc in the code bank
 .endproc
 
 ; once the process proc is done, it should jump back to here to perform cleanup
@@ -72,7 +71,7 @@
 	ply
 	pld
 	
-	stz vblank_interrupt_active_flag_ ; clear the flag now that we're done
+	dec vblank_interrupt_active_flag_ ; clear the flag now that we're done
 	
 	plb ; restore the db register
 	
@@ -84,12 +83,13 @@
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.proc vBlankProcess
+.proc vBlankProcessing
+	lda screen_brightness
+	
 	; check for changes to be made thru the PPU
-	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
+	SET_DATA_BANK PRESERVE_REGS_TRUE, #HARDWARE_BANK
 	
 	; update the screen brightness register
-	lda screen_brightness
 	sta INIDISP
 	
 	SET_DATA_BANK PRESERVE_REGS_FALSE, #LWRAM_BANK
@@ -101,6 +101,13 @@
 	
 Process_End:
 	jml vBlankHandlerCleanup ; jump back to perform cleanup and return
+.endproc
+
+; See the appropriate include file for information about this procedure.
+.proc vBlankHandlerInit
+	stz vblank_interrupt_active_flag_ ; make sure the flag is clear to start
+	
+	rts
 .endproc
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -31,4 +31,8 @@ INTERRUPT_HANDLERS_INCLUDED_ = 1
 ; An interrupt handler that immediately returns, doing nothing.
 .global doNothingHandler
 
+; Performs first time setup needed to run the vBlankHandler.
+; This procedure takes no parameters and returns nothing.
+.global vBlankHandlerInit
+
 .endif ; INTERRUPT_HANDLERS_INCLUDED_

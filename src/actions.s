@@ -109,20 +109,26 @@ Add_Periodic_Action:
 	; increment the number of periodic actions since we are adding one
 	inc num_periodic_actions_ ; use inc since it is 'atomic'
 	
-	ldy periodic_actions_end_
-	stx 0, y ; store the procedure pointer
-	plx
-	stx 2, y ; store the associated value
+	SET_ACCUM_16_BIT
 	
-	iny ; advance the buffer's end pointer, rolling it over if need be
-	iny
-	iny
-	iny
-	cpy #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
+	ldy periodic_actions_end_
+	
+	txa ; store the procedure pointer
+	sta a:0, y
+	
+	lda 3, s ; store the associated value
+	sta a:2, y
+	
+	tya ; advance the buffer's end pointer, rolling it over if need be
+	clc
+	adc #4
+	cmp #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
 	bcc Store_Periodic_Action_End
-	ldy #PERIODIC_BUFFER_ADDR
+	lda #PERIODIC_BUFFER_ADDR
 Store_Periodic_Action_End:
-	sty periodic_actions_end_
+	sta periodic_actions_end_
+	
+	SET_ACCUM_8_BIT ; return A to 8-bit before returning
 	
 	rts
 	
@@ -144,30 +150,33 @@ Add_Marker:
 	; increment the number of periodic actions since we are adding a marker
 	inc num_periodic_actions_ ; use inc since it is 'atomic'
 	
-	ldx periodic_actions_end_ ; fill in the values for a new marker
-	stz 0, x
-	stz 2, x
+	SET_ACCUM_16_BIT
+	
+	lda periodic_actions_end_ ; fill in the values for a new marker
+	tax
+	stz a:0, x
+	stz a:2, x
 	
 	ldy last_periodic_action_marker_ ; record this new action marker
 	beq Set_Last_Marker ; skip to this if there is already a last action marker
-	stx 2, y ; else, record the new marker in the last marker too
+	sta a:2, y ; else, record the new marker in the last marker too
 Set_Last_Marker:
-	stx last_periodic_action_marker_
+	sta last_periodic_action_marker_
 	
 	ldy first_periodic_action_marker_ ; check if this is the first marker
 	bne Increment_Buffer_End ; skip to here if there's already a first marker
-	stx first_periodic_action_marker_ ; store this as the first marker
+	sta first_periodic_action_marker_ ; store this as the first marker
 	
 Increment_Buffer_End:
-	inx ; advance the buffer's end pointer, rolling it over if need be
-	inx
-	inx
-	inx
-	cpx #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
+	clc ; advance the buffer's end pointer, rolling it over if need be
+	adc #4
+	cmp #PERIODIC_BUFFER_ADDR + PERIODIC_ACTIONS_SIZE
 	bcc Store_Period_Action_End ; if there's no rollover...
-	ldx #PERIODIC_BUFFER_ADDR
+	lda #PERIODIC_BUFFER_ADDR
 Store_Period_Action_End:
-	stx periodic_actions_end_
+	sta periodic_actions_end_
+	
+	SET_ACCUM_8_BIT ; return A to 8-bit before returning
 	
 	rts
 .endproc
@@ -185,6 +194,8 @@ Store_Period_Action_End:
 	bra Check_Next_For_Cleaning
 	
 Advance_Start_For_Cleaning:
+	dec num_periodic_actions_ ; we are reducing the number of entries, so dec
+	
 	tya ; advance the buffer's end pointer, rolling it over if need be
 	adc #4
 	tay
@@ -287,8 +298,10 @@ last_periodic_action_marker_:  .res 2 ; point to the last marker in the buffer
 ; registers used for continuous actions
 filled_continuous_actions_ptr_: .res 2 ; point to doubly-linked list of actions
 empty_continuous_actions_ptr_:  .res 2 ; point to doubly-linked list of empties
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-; other registers
+.segment "JUMP_PROC_ADDRESS"
+; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 proc_address_: .res 2 ; holds the address of the procedure to call
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -35,7 +35,6 @@ Main_Loop:
 	jsr addFadeOutAction
 	jsr markPeriodicActionSet
 	
-	wai ; stall the processor
-	jmp Main_Loop
+	bra Main_Loop
 .endproc
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

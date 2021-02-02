@@ -38,7 +38,7 @@
 	SET_ACCUM_16_BIT
 	SET_INDEX_16_BIT
 	
-	lda #$1FFF ; set the stack pointer at this address
+	lda #$1FFD ; set the stack pointer at this address
 	tcs
 	
 	lda #$0000 ; set the direct page to this address
@@ -149,8 +149,6 @@ Program_Bank_Register_Reset:
 	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
 	
 	; prepare to turn over control of the system (restart some things)
-	lda #$0F ; turn on the screen with full brightness
-	sta INIDISP
 	lda #$81 ; allow V-Blanks again and start automatically polling controllers
 	sta NMITIMEN
 	
@@ -170,6 +168,7 @@ Program_Bank_Register_Reset:
 ; subsystems used by this program.
 ; This procedure takes no parameters and returns nothing.
 .proc systemInit
+	jsr vBlankHandlerInit ; this must be called before NMI can run
 	jsr resetActionSystem ; this effectively initializes the action system
 	
 	jml resetHandlerCleanup

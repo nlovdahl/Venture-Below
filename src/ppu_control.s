@@ -27,20 +27,26 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; See the appropriate include file for information about this procedure.
 .proc addFadeInAction
-	ldx #61
+	ldx #61 ; prepare the procedure pointer and the associated value
 	phx
 	ldx #.LOWORD(actionFadeIn)
+	
 	jsr addPeriodicAction
+	
+	plx ; pop the extra parameter from the stack before returning
 	
 	rts
 .endproc
 
 ; See the appropriate include file for information about this procedure.
 .proc addFadeOutAction
-	ldx #61
+	ldx #61 ; prepare the procedure pointer and the associated value
 	phx
 	ldx #.LOWORD(actionFadeOut)
+	
 	jsr addPeriodicAction
+	
+	plx ; pop the extra parameter from the stack before returning
 	
 	rts
 .endproc
