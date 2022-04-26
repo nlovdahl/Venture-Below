@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021 - 2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -42,7 +42,13 @@ PROC_ADDRESS_ADDR = .LOWORD(proc_address_)
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: resetActionSystem
+; SCOPE: Public
+; DESCRIPTION:
+;   Resets both the periodic and continuous action systems, removing any
+;   actions. This needs to be called to initialize these systems too.
+; ~~~~~~~~~~~~~~~~
 .proc resetActionSystem
 	stz num_periodic_actions_ ; no periodic actions to start with
 	
@@ -92,7 +98,17 @@ Setup_Next_Node:
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: addPeriodicAction
+; SCOPE: Public
+; DESCRIPTION:
+;   Adds a periodic action to the next action set (starting a new action set if
+;   necessary) using the given procedure pointer and associated value. If the
+;   procedure pointer is zero, then this will mark a complete action set.
+; PARAMETERS:
+;   X (word) - The pointer to the procedure associated with the action.
+;   S + 3 (word) - The initial associated value for the action.
+; ~~~~~~~~~~~~~~~~
 .proc addPeriodicAction
 	cpx #0 ; branch if the procedure pointer is zero
 	beq Add_Periodic_Action_Marker
@@ -136,7 +152,14 @@ Add_Periodic_Action_Marker:
 	jmp markPeriodicActionSet
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: markPeriodicActionSet
+; SCOPE: Public
+; DESCRIPTION:
+;   Marks the end of an action set. That is, this marks that any periodic
+;   actions previously submitted since the last action set (if any) compose a
+;   set which should all be processed together.
+; ~~~~~~~~~~~~~~~~
 .proc markPeriodicActionSet
 	; check if we have room to add another periodic action
 Check_Num:
@@ -181,7 +204,14 @@ Store_Period_Action_End:
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: processPeriodicActions
+; SCOPE: Public
+; DESCRIPTION:
+;   Processes all of the periodic actions by calling the procedures with their
+;   associated values. If an action set has been marked, then only the actions
+;   in the current set are processed.
+; ~~~~~~~~~~~~~~~~
 .proc processPeriodicActions
 	ldx first_periodic_action_marker_
 	beq Finish_Processing_Periodic_Actions ; just return if that was zero
@@ -270,17 +300,46 @@ Finish_Processing_Periodic_Actions:
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: addContinuousAction
+; SCOPE: Public
+; DESCRIPTION:
+;   Adds a continuous action to the list of continuous actions which are
+;   processed. The added action has a procedure pointer and an associated value
+;   like with periodic actions.
+; PARAMETERS:
+;   X (word) - A pointer to the procedure associated with the action.
+;   S + 3 (word) - The initial associated value for the action.
+; RETURNS:
+;   X (word) - A pointer to the added action. This will be needed to remove the
+;              action. If the action could not be added, zero is returned
+;              instead.
+; ~~~~~~~~~~~~~~~~
 .proc addContinuousAction
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: removeContinuousAction
+; SCOPE: Public
+; DESCRIPTION:
+;   Removes a continuous action from the list of continuous actions which are
+;   processed.
+; PARAMETERS:
+;   X (word) - A pointer to the continuous action to remove. This should be the
+;              address returned by addContinuousAction.
+; ~~~~~~~~~~~~~~~~
 .proc removeContinuousAction
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: processContinuousActions
+; SCOPE: Public
+; DESCRIPTION:
+;   Processes all of the continuous actions by calling the procedures with their
+;   associated values.
+; ~~~~~~~~~~~~~~~~
 .proc processContinuousActions
 	rts
 .endproc

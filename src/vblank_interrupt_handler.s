@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021-2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -29,7 +29,14 @@
 
 .segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: vBlankHandler
+; SCOPE: Public
+; DESCRIPTION:
+;   The interrupt handler for non-maskable interrupts - fired at the start of
+;   v-blank - during which changes can be made to graphics. This handler
+;   performs those changes.
+; ~~~~~~~~~~~~~~~~
 .proc vBlankHandler
 	sei ; disable interrupts
 	
@@ -57,7 +64,12 @@
 	jml vBlankProcessing ; jump to a process proc in the code bank
 .endproc
 
-; once the process proc is done, it should jump back to here to perform cleanup
+; ~~~~~~~~~~~~~~~~
+; NAME: vBlankHandlerCleanup
+; SCOPE: Private
+; DESCRIPTION:
+;   Once the process proc is done, jump back to here to perform cleanup.
+; ~~~~~~~~~~~~~~~~
 .proc vBlankHandlerCleanup
 	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
 	
@@ -83,6 +95,13 @@
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+; ~~~~~~~~~~~~~~~~
+; NAME: vBlankProcessing
+; SCOPE: Private
+; DESCRIPTION:
+;   Does work related to graphics during v-blank. This procedure can safely call
+;   other procedures in the code bank.
+; ~~~~~~~~~~~~~~~~
 .proc vBlankProcessing
 	lda screen_brightness
 	
@@ -103,7 +122,12 @@ Process_End:
 	jml vBlankHandlerCleanup ; jump back to perform cleanup and return
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: vBlankHandlerInit
+; SCOPE: Public
+; DESCRIPTION:
+;   Performs first time setup needed to run the vBlankHandler.
+; ~~~~~~~~~~~~~~~~
 .proc vBlankHandlerInit
 	stz vblank_interrupt_active_flag_ ; make sure the flag is clear to start
 	

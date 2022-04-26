@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021-2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -23,7 +23,12 @@
 
 .segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: doNothingHandler
+; SCOPE: Public
+; DESCRIPTION:
+;   An interrupt handler that immediately returns, doing nothing.
+; ~~~~~~~~~~~~~~~~
 .proc doNothingHandler
 	rti
 .endproc

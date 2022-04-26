@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021-2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -26,7 +26,13 @@
 
 .segment "INTERRUPT_HANDLER_CODE"
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: resetHandler
+; SCOPE: Public
+; DESCRIPTION:
+;   The interrupt handler called for a system reset (or startup). This performs
+;   all of the initialization needed.
+; ~~~~~~~~~~~~~~~~
 .proc resetHandler
 	sei ; disable interrupts
 	
@@ -143,7 +149,12 @@ Program_Bank_Register_Reset:
 	jml systemInit ; initialize software systems / subsystems
 .endproc
 
-; once initialization is done, it should jump back here to perform cleanup
+; ~~~~~~~~~~~~~~~~
+; NAME: resetHandlerCleanup
+; SCOPE: Private
+; DESCRIPTION:
+;   Performs cleanup from work reseting, and then jumps to the main loop.
+; ~~~~~~~~~~~~~~~~
 .proc resetHandlerCleanup
 	; set the data bank register to the the hardware bank
 	SET_DATA_BANK PRESERVE_REGS_FALSE, #HARDWARE_BANK
@@ -164,9 +175,12 @@ Program_Bank_Register_Reset:
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; A procedure that performs initialization for the software systems and 
-; subsystems used by this program.
-; This procedure takes no parameters and returns nothing.
+; ~~~~~~~~~~~~~~~~
+; NAME: systemInit
+; SCOPE: Private
+; DESCRIPTION:
+;   Performs initialization for the software systems and subsystems.
+; ~~~~~~~~~~~~~~~~
 .proc systemInit
 	jsr vBlankHandlerInit ; this must be called before NMI can run
 	jsr resetActionSystem ; this effectively initializes the action system

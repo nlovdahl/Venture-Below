@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021 - 2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -19,7 +19,6 @@
 .ifndef MAIN_LOOP_INCLUDED_
 MAIN_LOOP_INCLUDED_ = 1
 
-; The main loop for the program.
 .global mainLoop
 
 .endif

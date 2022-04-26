@@ -1,6 +1,6 @@
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ; This file is a part of Venture Below, a game for the SNES.
-; Copyright (C) 2021 Nicholas Lovdahl
+; Copyright (C) 2021-2022 Nicholas Lovdahl
 
 ; Venture Below is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
@@ -25,7 +25,14 @@
 
 .code
 ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: setSeed
+; SCOPE: Public
+; DESCRIPTION:
+;   Sets the seed used to generate pseudo-random numbers.
+; PARAMETERS:
+;   X (word) - The seed to use. A non-zero default seed will be used for zero.
+; ~~~~~~~~~~~~~~~~
 .proc setSeed
 	cpx #0 ; check if the seed in x is zero
 	bne Set_Good_Seed ; if the seed isn't 0, we can just set it
@@ -39,7 +46,12 @@ Set_Good_Seed:
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: nextRandomByte
+; SCOPE: Public
+; DESCRIPTION:
+;   Gets the next generated random byte and places it in rand_value.
+; ~~~~~~~~~~~~~~~~
 .proc nextRandomByte
 	lda odd_byte_ ; check if there is a leftover byte to use
 	bmi Leftover_Byte ; if the high bit is set (negative number) we have a byte
@@ -61,7 +73,12 @@ Leftover_Byte:
 	rts
 .endproc
 
-; See the appropriate include file for information about this procedure.
+; ~~~~~~~~~~~~~~~~
+; NAME: nextRandomWord
+; SCOPE: Public
+; DESCRIPTION:
+;   Gets the next generated random word and places it in rand_value.
+; ~~~~~~~~~~~~~~~~
 .proc nextRandomWord
 	stz odd_byte_ ; we need a whole word, no leftover bytes
 	
